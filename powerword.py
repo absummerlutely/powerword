@@ -23,7 +23,7 @@ nltk.download('wordnet')
 nltk.download('punkt')
 nltk.download('omw-1.4')
 
-additional_stopwords = ['however', 'important', 'also', 'understanding', 'one', 'many', 'several', 'within', 'among','study','area','new','tp','tibetan','plateau','sensitive','region','mountain','china','used']
+additional_stopwords = ['however', 'important', 'also', 'understanding', 'one', 'many', 'several', 'within', 'among','study','area','new','tp','tibetan','plateau','sensitive','region','mountain','used']
 
 # Add domain-specific stopwords
 stop_words = set(stopwords.words('english'))
@@ -31,7 +31,7 @@ stop_words.update(additional_stopwords)
 
 # remove the abstracts that are empty
 data = data[data['abstract'].notna()]
-# remove the abstracts that are in chinese
+
 # Set the seed to ensure consistent language detection results
 DetectorFactory.seed = 0
 
@@ -75,23 +75,6 @@ vectorizer = TfidfVectorizer(stop_words=stop_words)
 term_document_matrix = vectorizer.fit_transform(data['abstract'])
 
 cosine_sim_matrix = cosine_similarity(term_document_matrix)
-
-# Add publication nodes to the graph
-for i in range(cosine_sim_matrix.shape[0]):
-    G.add_node(i)
-
-# Connect keyword nodes to publication nodes based on the similarity threshold
-for i, abstract in enumerate(data['abstract']):
-    keywords = yake_keywords(abstract)
-    document_vector = term_document_matrix[i]
-
-    for keyword in keywords[:5]:  # Extract top 5 keywords
-        keyword_vector = vectorizer.transform([keyword])
-        cosine_similarity_value = cosine_similarity(document_vector, keyword_vector)
-
-        if cosine_similarity_value >= similarity_threshold:
-            G.add_edge(i, keyword, weight=cosine_similarity_value)
-
 
 # Compute the degree centrality for each keyword
 degree_centrality = nx.degree_centrality(G)
