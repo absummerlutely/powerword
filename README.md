@@ -21,7 +21,7 @@ Place your dataset of research publications in CSV format in the project folder.
 Name this file publications.csv.  
 
 2.Run the main script:  
-python yake_extraction.py   
+python powerword.py   
 
 3.The top 10 keywords will be printed to the console, along with their impact scores.  
 
